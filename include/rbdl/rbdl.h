@@ -65,5 +65,7 @@ RBDL_DLLAPI void rbdl_check_api_version(int version);
 /** Prints version information to standard output */
 RBDL_DLLAPI void rbdl_print_version();
 
+#undef LOG
+
 /* RBDL_H */
 #endif
