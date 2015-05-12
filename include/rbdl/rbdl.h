@@ -5,6 +5,8 @@
  * Licensed under the zlib license. See LICENSE for more details.
  */
 
+#undef LOG
+
 #ifndef RBDL_H
 #define RBDL_H
 
