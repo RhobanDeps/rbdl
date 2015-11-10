@@ -28,7 +28,13 @@ typedef vector<JointPtr> URDFJointVector;
 typedef map<string, LinkPtr > URDFLinkMap;
 typedef map<string, JointPtr > URDFJointMap;
 
-bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose) {
+bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose, 
+    Eigen::MatrixXd* inertiaData = NULL, bool setInertia = false) {
+        if (inertiaData != NULL && setInertia == false) {
+            *inertiaData = Eigen::MatrixXd();
+        }
+        int inertiaCount = 0;
+
 	boost::shared_ptr<urdf::Link> urdf_root_link;
 
 	URDFLinkMap link_map;
@@ -71,6 +77,41 @@ bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose) {
 		root_inertial_inertia(2,0) = root->inertial->ixz;
 		root_inertial_inertia(2,1) = root->inertial->iyz;
 		root_inertial_inertia(2,2) = root->inertial->izz;
+
+                if (inertiaData != NULL && setInertia == false) {
+                    size_t row = inertiaData->rows();
+                    inertiaData->conservativeResize(row+1, 10);
+                    inertiaData->operator()(row, 0) = root->inertial->mass;
+                    inertiaData->operator()(row, 1) = root->inertial->origin.position.x;
+                    inertiaData->operator()(row, 2) = root->inertial->origin.position.y;
+                    inertiaData->operator()(row, 3) = root->inertial->origin.position.z;
+                    inertiaData->operator()(row, 4) = root->inertial->ixx;
+                    inertiaData->operator()(row, 5) = root->inertial->ixy;
+                    inertiaData->operator()(row, 6) = root->inertial->ixz;
+                    inertiaData->operator()(row, 7) = root->inertial->iyy;
+                    inertiaData->operator()(row, 8) = root->inertial->iyz;
+                    inertiaData->operator()(row, 9) = root->inertial->izz;
+                }
+                if (inertiaData != NULL && setInertia == true) {
+                    if (inertiaData->rows() < inertiaCount+1) {
+                        throw std::logic_error("RBDL inertiaData size");
+                    }
+                    root_inertial_mass = inertiaData->operator()(inertiaCount, 0);
+                    root_inertial_position.set (
+                        inertiaData->operator()(inertiaCount, 1),
+                        inertiaData->operator()(inertiaCount, 2),
+                        inertiaData->operator()(inertiaCount, 3));
+                    root_inertial_inertia(0,0) = inertiaData->operator()(inertiaCount, 4);
+                    root_inertial_inertia(0,1) = inertiaData->operator()(inertiaCount, 5);
+                    root_inertial_inertia(0,2) = inertiaData->operator()(inertiaCount, 6);
+                    root_inertial_inertia(1,0) = inertiaData->operator()(inertiaCount, 5);
+                    root_inertial_inertia(1,1) = inertiaData->operator()(inertiaCount, 7);
+                    root_inertial_inertia(1,2) = inertiaData->operator()(inertiaCount, 8);
+                    root_inertial_inertia(2,0) = inertiaData->operator()(inertiaCount, 6);
+                    root_inertial_inertia(2,1) = inertiaData->operator()(inertiaCount, 8);
+                    root_inertial_inertia(2,2) = inertiaData->operator()(inertiaCount, 9);
+                    inertiaCount++;
+                }
 
 		root->inertial->origin.rotation.getRPY (root_inertial_rpy[0], root_inertial_rpy[1], root_inertial_rpy[2]);
 
@@ -228,6 +269,41 @@ bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose) {
 			link_inertial_inertia(2,0) = urdf_child->inertial->ixz;
 			link_inertial_inertia(2,1) = urdf_child->inertial->iyz;
 			link_inertial_inertia(2,2) = urdf_child->inertial->izz;
+                
+                        if (inertiaData != NULL && setInertia == false) {
+                            size_t row = inertiaData->rows();
+                            inertiaData->conservativeResize(row+1, 10);
+                            inertiaData->operator()(row, 0) = urdf_child->inertial->mass;
+                            inertiaData->operator()(row, 1) = urdf_child->inertial->origin.position.x;
+                            inertiaData->operator()(row, 2) = urdf_child->inertial->origin.position.y;
+                            inertiaData->operator()(row, 3) = urdf_child->inertial->origin.position.z;
+                            inertiaData->operator()(row, 4) = urdf_child->inertial->ixx;
+                            inertiaData->operator()(row, 5) = urdf_child->inertial->ixy;
+                            inertiaData->operator()(row, 6) = urdf_child->inertial->ixz;
+                            inertiaData->operator()(row, 7) = urdf_child->inertial->iyy;
+                            inertiaData->operator()(row, 8) = urdf_child->inertial->iyz;
+                            inertiaData->operator()(row, 9) = urdf_child->inertial->izz;
+                        }
+                        if (inertiaData != NULL && setInertia == true) {
+                            if (inertiaData->rows() < inertiaCount+1) {
+                                throw std::logic_error("RBDL inertiaData size");
+                            }
+                            link_inertial_mass = inertiaData->operator()(inertiaCount, 0);
+                            link_inertial_position.set (
+                                inertiaData->operator()(inertiaCount, 1),
+                                inertiaData->operator()(inertiaCount, 2),
+                                inertiaData->operator()(inertiaCount, 3));
+                            link_inertial_inertia(0,0) = inertiaData->operator()(inertiaCount, 4);
+                            link_inertial_inertia(0,1) = inertiaData->operator()(inertiaCount, 5);
+                            link_inertial_inertia(0,2) = inertiaData->operator()(inertiaCount, 6);
+                            link_inertial_inertia(1,0) = inertiaData->operator()(inertiaCount, 5);
+                            link_inertial_inertia(1,1) = inertiaData->operator()(inertiaCount, 7);
+                            link_inertial_inertia(1,2) = inertiaData->operator()(inertiaCount, 8);
+                            link_inertial_inertia(2,0) = inertiaData->operator()(inertiaCount, 6);
+                            link_inertial_inertia(2,1) = inertiaData->operator()(inertiaCount, 8);
+                            link_inertial_inertia(2,2) = inertiaData->operator()(inertiaCount, 9);
+                            inertiaCount++;
+                        }
 
 			if (link_inertial_rpy != Vector3d (0., 0., 0.)) {
 				cerr << "Error while processing body '" << urdf_child->name << "': rotation of body frames not yet supported. Please rotate the joint frame instead." << endl;
@@ -267,7 +343,8 @@ bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose) {
 	return true;
 }
 
-RBDL_DLLAPI bool URDFReadFromFile (const char* filename, Model* model, bool verbose) {
+RBDL_DLLAPI bool URDFReadFromFile (const char* filename, Model* model, bool verbose,
+    Eigen::MatrixXd* inertiaData, bool setInertia) {
 	ifstream model_file (filename);
 	if (!model_file) {
 		cerr << "Error opening file '" << filename << "'." << endl;
@@ -283,15 +360,16 @@ RBDL_DLLAPI bool URDFReadFromFile (const char* filename, Model* model, bool verb
 
 	model_file.close();
 
-	return URDFReadFromString (model_xml_string.c_str(), model, verbose);
+	return URDFReadFromString (model_xml_string.c_str(), model, verbose, inertiaData, setInertia);
 }
 
-RBDL_DLLAPI bool URDFReadFromString (const char* model_xml_string, Model* model, bool verbose) {
+RBDL_DLLAPI bool URDFReadFromString (const char* model_xml_string, Model* model, bool verbose,
+    Eigen::MatrixXd* inertiaData, bool setInertia) {
 	assert (model);
 
 	boost::shared_ptr<urdf::ModelInterface> urdf_model = urdf::parseURDF (model_xml_string);
  
-	if (!construct_model (model, urdf_model, verbose)) {
+	if (!construct_model (model, urdf_model, verbose, inertiaData, setInertia)) {
 		cerr << "Error constructing model from urdf file." << endl;
 		return false;
 	}
