@@ -1,0 +1,12 @@
+{
+    "name": "rhobandeps/rbdl",
+    "includes": ["include", "build/include", "addons"],
+    "libraries": ["build", "build/addons/urdfreader"],
+    "links": ["build/librbdl.a", "build/addons/urdfreader/librbdl_urdfreader.a"],
+    "build": [
+        "mkdir -p build",
+        "cd build",
+        "cmake -DCMAKE_BUILD_TYPE=Release ..",
+        "make"
+    ]
+}
