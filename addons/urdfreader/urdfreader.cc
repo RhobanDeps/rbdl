@@ -118,7 +118,7 @@ bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose,
 		Body root_link = Body (root_inertial_mass,
 				root_inertial_position,
 				root_inertial_inertia);
-	        Joint root_joint = Joint ( JointTypeFixed );
+	        Joint root_joint = Joint ( JointTypeFixed , "root");
                 /*
 		Joint root_joint = Joint (
 				SpatialVector (0., 0., 0., 1., 0., 0.),
@@ -203,11 +203,13 @@ bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose,
 		// create the joint
 		Joint rbdl_joint;
 		if (urdf_joint->type == urdf::Joint::REVOLUTE || urdf_joint->type == urdf::Joint::CONTINUOUS) {
-			rbdl_joint = Joint (SpatialVector (urdf_joint->axis.x, urdf_joint->axis.y, urdf_joint->axis.z, 0., 0., 0.));
+			rbdl_joint = Joint (SpatialVector (urdf_joint->axis.x, urdf_joint->axis.y, urdf_joint->axis.z, 0., 0., 0.), 
+                            urdf_joint->name);
 		} else if (urdf_joint->type == urdf::Joint::PRISMATIC) {
-			rbdl_joint = Joint (SpatialVector (0., 0., 0., urdf_joint->axis.x, urdf_joint->axis.y, urdf_joint->axis.z));
+			rbdl_joint = Joint (SpatialVector (0., 0., 0., urdf_joint->axis.x, urdf_joint->axis.y, urdf_joint->axis.z),
+                                urdf_joint->name);
 		} else if (urdf_joint->type == urdf::Joint::FIXED) {
-			rbdl_joint = Joint (JointTypeFixed);
+			rbdl_joint = Joint (JointTypeFixed, urdf_joint->name);
 		} else if (urdf_joint->type == urdf::Joint::FLOATING) {
 			// todo: what order of DoF should be used?
 			rbdl_joint = Joint (
@@ -216,7 +218,8 @@ bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose,
 					SpatialVector (0., 0., 0., 0., 0., 1.),
 					SpatialVector (1., 0., 0., 0., 0., 0.),
 					SpatialVector (0., 1., 0., 0., 0., 0.),
-					SpatialVector (0., 0., 1., 0., 0., 0.));
+					SpatialVector (0., 0., 1., 0., 0., 0.), 
+                                        urdf_joint->name);
 		} else if (urdf_joint->type == urdf::Joint::PLANAR) {
 			// todo: which two directions should be used that are perpendicular
 			// to the specified axis?
@@ -329,11 +332,11 @@ bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose,
 		if (0 && urdf_joint->type == urdf::Joint::FLOATING) {
 			Matrix3d zero_matrix = Matrix3d::Zero();
 			Body null_body (0., Vector3d::Zero(3), zero_matrix);
-			Joint joint_txtytz(JointTypeTranslationXYZ);
+			Joint joint_txtytz(JointTypeTranslationXYZ, urdf_joint->name);
 			string trans_body_name = urdf_child->name + "_Translate";
 			rbdl_model->AddBody (rbdl_parent_id, rbdl_joint_frame, joint_txtytz, null_body, trans_body_name);
 
-			Joint joint_euler_zyx (JointTypeEulerXYZ);
+			Joint joint_euler_zyx (JointTypeEulerXYZ, urdf_joint->name);
 			rbdl_model->AppendBody (SpatialTransform(), joint_euler_zyx, rbdl_body, urdf_child->name);
 		} else {
 			rbdl_model->AddBody (rbdl_parent_id, rbdl_joint_frame, rbdl_joint, rbdl_body, urdf_child->name);

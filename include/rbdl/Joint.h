@@ -193,12 +193,14 @@ struct RBDL_DLLAPI Joint {
 		mJointAxes (NULL),
 		mJointType (JointTypeUndefined),
 		mDoFCount (0),
-		q_index (0) {};
-	Joint (JointType type) :
+		q_index (0),
+                name("") {};
+	Joint (JointType type, const std::string& jointname) :
 		mJointAxes (NULL),
 		mJointType (type),
 	  mDoFCount (0),
-		q_index (0) {
+		q_index (0),
+                name(jointname) {
 			if (type == JointTypeRevoluteX) {
 				mDoFCount = 1;
 				mJointAxes = new Math::SpatialVector[mDoFCount];
@@ -260,9 +262,9 @@ struct RBDL_DLLAPI Joint {
 	Joint (const Joint &joint) :
 		mJointType (joint.mJointType),
 		mDoFCount (joint.mDoFCount),
-		q_index (joint.q_index) {
+		q_index (joint.q_index),
+                name(joint.name) {
 			mJointAxes = new Math::SpatialVector[mDoFCount];
-
 			for (unsigned int i = 0; i < mDoFCount; i++)
 				mJointAxes[i] = joint.mJointAxes[i];
 		};
@@ -281,6 +283,7 @@ struct RBDL_DLLAPI Joint {
 				mJointAxes[i] = joint.mJointAxes[i];
 
 			q_index = joint.q_index;
+                        name = joint.name;
 		}
 		return *this;
 	}
@@ -303,7 +306,8 @@ struct RBDL_DLLAPI Joint {
 	 */
 	Joint (
 			const JointType joint_type,
-			const Math::Vector3d &joint_axis
+			const Math::Vector3d &joint_axis,
+                        const std::string& jointname
 			) {
 		mDoFCount = 1;
 		mJointAxes = new Math::SpatialVector[mDoFCount];
@@ -314,6 +318,7 @@ struct RBDL_DLLAPI Joint {
 		assert ( joint_type == JointTypeRevolute || joint_type == JointTypePrismatic );
 
 		mJointType = joint_type;
+                name = jointname;
 
 		if (joint_type == JointTypeRevolute) {
 			// make sure we have a unit axis
@@ -347,7 +352,8 @@ struct RBDL_DLLAPI Joint {
 	 * \param axis_0 Motion subspace for axis 0
 	 */
 	Joint (
-			const Math::SpatialVector &axis_0
+			const Math::SpatialVector &axis_0,
+                        const std::string& jointname
 			) {
 		mDoFCount = 1;
 		mJointAxes = new Math::SpatialVector[mDoFCount];
@@ -362,6 +368,7 @@ struct RBDL_DLLAPI Joint {
 			mJointType = JointType1DoF;
 		}
 		validate_spatial_axis (mJointAxes[0]);
+                name = jointname;
 	}
 
 	/** \brief Constructs a 2 DoF joint with the given motion subspaces.
@@ -376,7 +383,8 @@ struct RBDL_DLLAPI Joint {
 	 */
 	Joint (
 			const Math::SpatialVector &axis_0,
-			const Math::SpatialVector &axis_1
+			const Math::SpatialVector &axis_1,
+                        const std::string& jointname
 			) {
 		mJointType = JointType2DoF;
 		mDoFCount = 2;
@@ -387,6 +395,7 @@ struct RBDL_DLLAPI Joint {
 
 		validate_spatial_axis (mJointAxes[0]);
 		validate_spatial_axis (mJointAxes[1]);
+                name = jointname;
 	}
 
 	/** \brief Constructs a 3 DoF joint with the given motion subspaces.
@@ -403,7 +412,8 @@ struct RBDL_DLLAPI Joint {
 	Joint (
 			const Math::SpatialVector &axis_0,
 			const Math::SpatialVector &axis_1,
-			const Math::SpatialVector &axis_2
+			const Math::SpatialVector &axis_2,
+                        const std::string& jointname
 			) {
 		mJointType = JointType3DoF;
 		mDoFCount = 3;
@@ -417,6 +427,7 @@ struct RBDL_DLLAPI Joint {
 		validate_spatial_axis (mJointAxes[0]);
 		validate_spatial_axis (mJointAxes[1]);
 		validate_spatial_axis (mJointAxes[2]);
+                name = jointname;
 	}
 
 	/** \brief Constructs a 4 DoF joint with the given motion subspaces.
@@ -435,7 +446,8 @@ struct RBDL_DLLAPI Joint {
 			const Math::SpatialVector &axis_0,
 			const Math::SpatialVector &axis_1,
 			const Math::SpatialVector &axis_2,
-			const Math::SpatialVector &axis_3
+			const Math::SpatialVector &axis_3,
+                        const std::string& jointname
 			) {
 		mJointType = JointType4DoF;
 		mDoFCount = 4;
@@ -451,6 +463,7 @@ struct RBDL_DLLAPI Joint {
 		validate_spatial_axis (mJointAxes[1]);
 		validate_spatial_axis (mJointAxes[2]);
 		validate_spatial_axis (mJointAxes[3]);
+                name = jointname;
 	}
 
 	/** \brief Constructs a 5 DoF joint with the given motion subspaces.
@@ -471,7 +484,8 @@ struct RBDL_DLLAPI Joint {
 			const Math::SpatialVector &axis_1,
 			const Math::SpatialVector &axis_2,
 			const Math::SpatialVector &axis_3,
-			const Math::SpatialVector &axis_4
+			const Math::SpatialVector &axis_4,
+                        const std::string& jointname
 			) {
 		mJointType = JointType5DoF;
 		mDoFCount = 5;
@@ -489,6 +503,7 @@ struct RBDL_DLLAPI Joint {
 		validate_spatial_axis (mJointAxes[2]);
 		validate_spatial_axis (mJointAxes[3]);
 		validate_spatial_axis (mJointAxes[4]);
+                name = jointname;
 	}
 
 	/** \brief Constructs a 6 DoF joint with the given motion subspaces.
@@ -511,7 +526,8 @@ struct RBDL_DLLAPI Joint {
 			const Math::SpatialVector &axis_2,
 			const Math::SpatialVector &axis_3,
 			const Math::SpatialVector &axis_4,
-			const Math::SpatialVector &axis_5
+			const Math::SpatialVector &axis_5,
+                        const std::string& jointname
 			) {
 		mJointType = JointType6DoF;
 		mDoFCount = 6;
@@ -531,6 +547,7 @@ struct RBDL_DLLAPI Joint {
 		validate_spatial_axis (mJointAxes[3]);
 		validate_spatial_axis (mJointAxes[4]);
 		validate_spatial_axis (mJointAxes[5]);
+                name = jointname;
 	}
 
 	/** \brief Checks whether we have pure rotational or translational axis.
@@ -564,6 +581,9 @@ struct RBDL_DLLAPI Joint {
 	JointType mJointType;
 	unsigned int mDoFCount;
 	unsigned int q_index;
+
+        /// \brief Joint URDF name
+        std::string name;
 };
 
 /** \brief Computes all variables for a joint model

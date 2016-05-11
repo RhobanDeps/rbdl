@@ -168,7 +168,7 @@ unsigned int AddBodyMultiDofJoint (
 	// which each is attached to the model with a single degree of freedom
 	// joint.
 	for (j = 0; j < joint_count; j++) {
-		single_dof_joint = Joint (joint.mJointAxes[j]);
+		single_dof_joint = Joint (joint.mJointAxes[j], joint.name);
 
 		if (single_dof_joint.mJointType == JointType1DoF) {
 			Vector3d rotation (
@@ -181,9 +181,9 @@ unsigned int AddBodyMultiDofJoint (
 					joint.mJointAxes[j][5]);
 
 			if (rotation == Vector3d (0., 0., 0.)) {
-				single_dof_joint = Joint (JointTypePrismatic, translation);
+				single_dof_joint = Joint (JointTypePrismatic, translation, joint.name);
 			} else if (translation == Vector3d (0., 0., 0.)) {
-				single_dof_joint = Joint (JointTypeRevolute, rotation);
+				single_dof_joint = Joint (JointTypeRevolute, rotation, joint.name);
 			} else {
 				std::cerr << "Invalid joint axis: " << joint.mJointAxes[0].transpose() << ". Helical joints not (yet) supported." << std::endl;
 				abort();
@@ -396,7 +396,8 @@ unsigned int Model::SetFloatingBaseBody (const Body &body) {
 			SpatialVector (0., 0., 0., 0., 0., 1.),
 			SpatialVector (0., 0., 1., 0., 0., 0.),
 			SpatialVector (0., 1., 0., 0., 0., 0.),
-			SpatialVector (1., 0., 0., 0., 0., 0.)
+			SpatialVector (1., 0., 0., 0., 0., 0.),
+                        "base"
 			);
 
 	unsigned int body_id = this->AddBody (0, Xtrans (Vector3d (0., 0., 0.)), floating_base_joint, body);
