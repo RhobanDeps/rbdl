@@ -1,7 +1,7 @@
 {
     "name": "rhobandeps/rbdl",
+    "deps": ["rhobandeps/eigen"],
     "includes": ["include", "build/include", "addons"],
-    "libraries": ["build", "build/addons/urdfreader"],
     "links": ["build/librbdl.so", "build/addons/urdfreader/librbdl_urdfreader.so"],
     "build": [
         "mkdir -p build",

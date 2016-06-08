@@ -2,6 +2,10 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 PROJECT (RBDL)
 
+#Deps depencencies
+find_package(Deps)
+deps_add_libraries()
+
 SET ( RBDL_VERSION_MAJOR 2 )
 SET ( RBDL_VERSION_MINOR 4 )
 SET ( RBDL_VERSION_PATCH 0 )
@@ -37,7 +41,7 @@ IF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 ENDIF()
 
 IF (NOT RBDL_USE_SIMPLE_MATH)
-    include_directories(${EIGEN_DIRECTORY})
+    #include_directories(${EIGEN_DIRECTORY})
 ENDIF (NOT RBDL_USE_SIMPLE_MATH)
 
 # Options
