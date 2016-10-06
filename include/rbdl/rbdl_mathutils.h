@@ -30,6 +30,8 @@ enum RBDL_DLLAPI LinearSolver {
 	LinearSolverColPivHouseholderQR,
 	LinearSolverHouseholderQR,
 	LinearSolverLLT,
+	LinearSolverFullPivLU,
+        LinearSolverFullPivHouseholderQR,
 	LinearSolverLast,
 };
 

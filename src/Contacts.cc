@@ -200,6 +200,12 @@ void SolveContactSystemDirect (
 		case (LinearSolverHouseholderQR) :
 			x = A.householderQr().solve(b);
 			break;
+		case (LinearSolverFullPivLU) :
+			x = A.fullPivLu().solve(b);
+			break;
+		case (LinearSolverFullPivHouseholderQR) :
+			x = A.fullPivHouseholderQr().solve(b);
+			break;
 		default:
 			LOG << "Error: Invalid linear solver: " << linear_solver << std::endl;
 			assert (0);
@@ -275,6 +281,12 @@ void SolveContactSystemNullSpace (
 		case (LinearSolverHouseholderQR) :
 			qddot_y = (G * Y).householderQr().solve (gamma);
 			break;
+		case (LinearSolverFullPivLU) :
+			qddot_y = (G * Y).fullPivLu().solve (gamma);
+			break;
+		case (LinearSolverFullPivHouseholderQR) :
+			qddot_y = (G * Y).fullPivHouseholderQr().solve (gamma);
+			break;
 		default:
 			LOG << "Error: Invalid linear solver: " << linear_solver << std::endl;
 			assert (0);
@@ -299,6 +311,12 @@ void SolveContactSystemNullSpace (
 			break;
 		case (LinearSolverHouseholderQR) :
 			lambda = (G * Y).householderQr().solve (Y.transpose() * (H * qddot - c));
+			break;
+		case (LinearSolverFullPivLU) :
+			lambda = (G * Y).fullPivLu().solve (Y.transpose() * (H * qddot - c));
+			break;
+		case (LinearSolverFullPivHouseholderQR) :
+			lambda = (G * Y).fullPivHouseholderQr().solve (Y.transpose() * (H * qddot - c));
 			break;
 		default:
 			LOG << "Error: Invalid linear solver: " << linear_solver << std::endl;
@@ -831,6 +849,12 @@ void ForwardDynamicsContactsKokkevis (
 			break;
 		case (LinearSolverHouseholderQR) :
 			CS.force = CS.K.householderQr().solve(CS.a);
+			break;
+		case (LinearSolverFullPivLU) :
+			CS.force = CS.K.fullPivLu().solve(CS.a);
+			break;
+		case (LinearSolverFullPivHouseholderQR) :
+			CS.force = CS.K.fullPivHouseholderQr().solve(CS.a);
 			break;
 		default:
 			LOG << "Error: Invalid linear solver: " << CS.linear_solver << std::endl;
