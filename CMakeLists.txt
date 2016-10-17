@@ -1,10 +1,17 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
-PROJECT (RBDL)
+PROJECT (rbdl)
 
-#Deps depencencies
-find_package(Deps)
-deps_add_libraries()
+find_package(catkin REQUIRED COMPONENTS
+  Eigen
+  )
+
+catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES rbdl
+  CATKIN_DEPENDS Eigen
+)
+
 
 SET ( RBDL_VERSION_MAJOR 2 )
 SET ( RBDL_VERSION_MINOR 4 )
