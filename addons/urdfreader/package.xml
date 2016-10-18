@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <name>rbdl_urdfreader</name>
+  <version>0.0.0</version>
+  <description>A fixed version of the add-on rbdl_urdfreader with catkin support</description>
+
+  <maintainer email="qrouxel@labri.fr">Quentin Rouxel</maintainer>
+  <author email="martin.felis@iwr.uni-heidelberg.de">Martin Felis</author>
+
+  <license>zlib</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>rbdl</build_depend>
+
+  <run_depend>rbdl</run_depend>
+
+  <export>
+  </export>
+</package>

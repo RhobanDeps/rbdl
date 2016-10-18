@@ -6,7 +6,12 @@ find_package(catkin REQUIRED COMPONENTS
   Eigen
   )
 
-set(EXPORT_LIBRARIES rbdl)
+# Catkin dependencies ad publications
+catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES rbdl
+  CATKIN_DEPENDS Eigen
+)
 
 SET ( RBDL_VERSION_MAJOR 2 )
 SET ( RBDL_VERSION_MINOR 4 )
@@ -52,15 +57,16 @@ OPTION (RBDL_BUILD_TESTS "Build the test executables" OFF)
 OPTION (RBDL_ENABLE_LOGGING "Enable logging (warning: major impact on performance!)" OFF)
 OPTION (RBDL_USE_SIMPLE_MATH "Use slow math instead of the fast Eigen3 library (faster compilation)" OFF)
 OPTION (RBDL_STORE_VERSION "Enable storing of version information in the library (requires build from valid repository)" OFF)
-OPTION (RBDL_BUILD_ADDON_URDFREADER "Build the (experimental) urdf reader" ON)
+# Now always activated
+#OPTION (RBDL_BUILD_ADDON_URDFREADER "Build the (experimental) urdf reader" ON)
 OPTION (RBDL_BUILD_ADDON_BENCHMARK "Build the benchmarking tool" OFF)
 OPTION (RBDL_BUILD_ADDON_LUAMODEL "Build the lua model reader" OFF)
 
 # Addons
-IF (RBDL_BUILD_ADDON_URDFREADER)
-  set(EXPORT_LIBRARIES ${EXPORT_LIBRARIES} rbdl_urdfreader)
-  ADD_SUBDIRECTORY ( addons/urdfreader )
-ENDIF (RBDL_BUILD_ADDON_URDFREADER)
+#IF (RBDL_BUILD_ADDON_URDFREADER)
+#  set(EXPORT_LIBRARIES ${EXPORT_LIBRARIES} rbdl_urdfreader)
+#  ADD_SUBDIRECTORY ( addons/urdfreader )
+#ENDIF (RBDL_BUILD_ADDON_URDFREADER)
 
 IF (RBDL_BUILD_ADDON_BENCHMARK)
   ADD_SUBDIRECTORY ( addons/benchmark )
@@ -73,13 +79,6 @@ ENDIF (RBDL_BUILD_ADDON_LUAMODEL)
 IF (RBDL_BUILD_TESTS)
  ADD_SUBDIRECTORY ( tests )
 ENDIF (RBDL_BUILD_TESTS)
-
-# Catkin dependencies ad publications
-catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES ${EXPORT_LIBRARIES}
-  CATKIN_DEPENDS Eigen
-)
 
 # Source files for RBDL
 SET ( RBDL_SOURCES 
