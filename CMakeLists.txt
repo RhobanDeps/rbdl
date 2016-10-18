@@ -6,12 +6,7 @@ find_package(catkin REQUIRED COMPONENTS
   Eigen
   )
 
-catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES rbdl
-  CATKIN_DEPENDS Eigen
-)
-
+set(EXPORT_LIBRARIES rbdl)
 
 SET ( RBDL_VERSION_MAJOR 2 )
 SET ( RBDL_VERSION_MINOR 4 )
@@ -63,6 +58,7 @@ OPTION (RBDL_BUILD_ADDON_LUAMODEL "Build the lua model reader" OFF)
 
 # Addons
 IF (RBDL_BUILD_ADDON_URDFREADER)
+  set(EXPORT_LIBRARIES ${EXPORT_LIBRARIES} rbdl_urdfreader)
   ADD_SUBDIRECTORY ( addons/urdfreader )
 ENDIF (RBDL_BUILD_ADDON_URDFREADER)
 
@@ -77,6 +73,13 @@ ENDIF (RBDL_BUILD_ADDON_LUAMODEL)
 IF (RBDL_BUILD_TESTS)
  ADD_SUBDIRECTORY ( tests )
 ENDIF (RBDL_BUILD_TESTS)
+
+# Catkin dependencies ad publications
+catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES ${EXPORT_LIBRARIES}
+  CATKIN_DEPENDS Eigen
+)
 
 # Source files for RBDL
 SET ( RBDL_SOURCES 
