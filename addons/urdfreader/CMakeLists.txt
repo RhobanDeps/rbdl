@@ -41,10 +41,10 @@ INCLUDE_DIRECTORIES (
 
 # Options
 SET ( URDFREADER_SOURCES
-	urdfreader.cc
+	urdfreader/urdfreader.cc
 	)
 
-ADD_EXECUTABLE (rbdl_urdfreader_util rbdl_urdfreader_util.cc)
+ADD_EXECUTABLE (rbdl_urdfreader_util urdfreader/rbdl_urdfreader_util.cc)
 
 ADD_LIBRARY ( rbdl_urdfreader SHARED ${URDFREADER_SOURCES} )
 

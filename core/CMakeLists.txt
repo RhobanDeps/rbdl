@@ -8,7 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 # Catkin dependencies ad publications
 catkin_package(
-  INCLUDE_DIRS include
+  INCLUDE_DIRS include ${CMAKE_CURRENT_BINARY_DIR}/include
   LIBRARIES rbdl
   CATKIN_DEPENDS Eigen
 )
@@ -29,6 +29,7 @@ LIST( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake )
 INCLUDE_DIRECTORIES ( 
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 	${CMAKE_CURRENT_BINARY_DIR}/include
+  ${catkin_INCLUDE_DIRS}
 )
 
 # SET (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
