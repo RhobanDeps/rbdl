@@ -5,7 +5,9 @@ PROJECT (rbdl)
 find_package(catkin REQUIRED COMPONENTS
   Eigen
   )
-
+# Create the directory which will contain rbdl_config.h
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
+   
 # Catkin dependencies ad publications
 catkin_package(
   INCLUDE_DIRS include ${CMAKE_CURRENT_BINARY_DIR}/include
