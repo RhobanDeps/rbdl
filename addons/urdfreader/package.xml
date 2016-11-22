@@ -11,8 +11,8 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>rbdl</build_depend>
-  <build_depend>urdfdom</build_depend>
+  <build_depend>rbdl</build_depend> <!-- rhobandeps/rbdl -->
+  <build_depend>urdfdom</build_depend> <!-- rhobandeps/urdfdom -->
 
   <run_depend>rbdl</run_depend>
   <run_depend>urdfdom</run_depend>
