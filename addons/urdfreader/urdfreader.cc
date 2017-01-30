@@ -263,12 +263,12 @@ bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose,
                         throw std::logic_error("RBDL geometryData row not found: " + urdf_child->name);
                     }
                     size_t row = geometryName->at(urdf_child->name);
-                    joint_rpy(0) = inertiaData->operator()(row, 0);
-                    joint_rpy(1) = inertiaData->operator()(row, 1);
-                    joint_rpy(2) = inertiaData->operator()(row, 2);
-                    joint_translation(0) = inertiaData->operator()(row, 3);
-                    joint_translation(1) = inertiaData->operator()(row, 4);
-                    joint_translation(2) = inertiaData->operator()(row, 5);
+                    joint_rpy(0) = geometryData->operator()(row, 0);
+                    joint_rpy(1) = geometryData->operator()(row, 1);
+                    joint_rpy(2) = geometryData->operator()(row, 2);
+                    joint_translation(0) = geometryData->operator()(row, 3);
+                    joint_translation(1) = geometryData->operator()(row, 4);
+                    joint_translation(2) = geometryData->operator()(row, 5);
                 }
 
 		SpatialTransform rbdl_joint_frame =
