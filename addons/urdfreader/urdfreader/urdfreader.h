@@ -10,10 +10,14 @@ struct Model;
 namespace Addons {
 	RBDL_DLLAPI bool URDFReadFromFile (const char* filename, Model* model, bool verbose = false, 
             Eigen::MatrixXd* inertiaData = NULL, std::map<std::string, size_t>* inertiaName = NULL, 
-            bool setInertia = false);
+            bool setInertia = false,
+            Eigen::MatrixXd* geometryData = NULL, std::map<std::string, size_t>* geometryName = NULL, 
+            bool setGeometry = false);
 	RBDL_DLLAPI bool URDFReadFromString (const char* model_xml_string, Model* model, bool verbose = false,
             Eigen::MatrixXd* inertiaData = NULL, std::map<std::string, size_t>* inertiaName = NULL, 
-            bool setInertia = false);
+            bool setInertia = false,
+            Eigen::MatrixXd* geometryData = NULL, std::map<std::string, size_t>* geometryName = NULL, 
+            bool setGeometry = false);
 }
 
 }

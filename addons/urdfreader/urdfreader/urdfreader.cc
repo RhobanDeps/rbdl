@@ -30,7 +30,9 @@ typedef map<string, JointPtr > URDFJointMap;
 
 bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose, 
     Eigen::MatrixXd* inertiaData = NULL, std::map<std::string, size_t>* inertiaName = NULL,
-    bool setInertia = false) {
+    bool setInertia = false,
+    Eigen::MatrixXd* geometryData = NULL, std::map<std::string, size_t>* geometryName = NULL,
+    bool setGeometry = false) {
         if (inertiaData != NULL && inertiaName == NULL) {
             throw std::logic_error("RBDL no inertia name");
         }
@@ -241,6 +243,34 @@ bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose,
 				urdf_joint->parent_to_joint_origin_transform.position.y,
 				urdf_joint->parent_to_joint_origin_transform.position.z
 				);
+
+                if (geometryData != NULL && setGeometry == false) {
+                    size_t row = geometryData->rows();
+                    geometryData->conservativeResize(row+1, 6);
+                    geometryData->operator()(row, 0) = joint_rpy(0);
+                    geometryData->operator()(row, 1) = joint_rpy(1);
+                    geometryData->operator()(row, 2) = joint_rpy(2);
+                    geometryData->operator()(row, 3) = joint_translation(0);
+                    geometryData->operator()(row, 4) = joint_translation(1);
+                    geometryData->operator()(row, 5) = joint_translation(2);
+                    geometryName->operator[](urdf_child->name) = row;
+                }
+                if (geometryData != NULL && setGeometry == true) {
+                    if (
+                        geometryName->count(urdf_child->name) == 0 || 
+                        geometryData->rows() < geometryName->at(urdf_child->name)
+                    ) {
+                        throw std::logic_error("RBDL geometryData row not found: " + urdf_child->name);
+                    }
+                    size_t row = geometryName->at(urdf_child->name);
+                    joint_rpy(0) = geometryData->operator()(row, 0);
+                    joint_rpy(1) = geometryData->operator()(row, 1);
+                    joint_rpy(2) = geometryData->operator()(row, 2);
+                    joint_translation(0) = geometryData->operator()(row, 3);
+                    joint_translation(1) = geometryData->operator()(row, 4);
+                    joint_translation(2) = geometryData->operator()(row, 5);
+                }
+
 		SpatialTransform rbdl_joint_frame =
 					Xrot (joint_rpy[0], Vector3d (1., 0., 0.))
 				* Xrot (joint_rpy[1], Vector3d (0., 1., 0.))
@@ -300,7 +330,10 @@ bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose,
                             (urdf_joint->type == urdf::Joint::REVOLUTE || urdf_joint->type == urdf::Joint::CONTINUOUS) &&
                             inertiaData != NULL && setInertia == true
                         ) {
-                            if (inertiaName->count(urdf_child->name) == 0 || inertiaData->rows() < inertiaName->at(urdf_child->name)) {
+                            if (
+                                inertiaName->count(urdf_child->name) == 0 || 
+                                inertiaData->rows() < inertiaName->at(urdf_child->name)
+                            ) {
                                 throw std::logic_error("RBDL inertiaData row not found: " + urdf_child->name);
                             }
                             size_t row = inertiaName->at(urdf_child->name);
@@ -359,7 +392,8 @@ bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose,
 }
 
 RBDL_DLLAPI bool URDFReadFromFile (const char* filename, Model* model, bool verbose,
-    Eigen::MatrixXd* inertiaData, std::map<std::string, size_t>* inertiaName, bool setInertia) {
+    Eigen::MatrixXd* inertiaData, std::map<std::string, size_t>* inertiaName, bool setInertia,
+    Eigen::MatrixXd* geometryData, std::map<std::string, size_t>* geometryName, bool setGeometry) {
 	ifstream model_file (filename);
 	if (!model_file) {
 		cerr << "Error opening file '" << filename << "'." << endl;
@@ -375,16 +409,22 @@ RBDL_DLLAPI bool URDFReadFromFile (const char* filename, Model* model, bool verb
 
 	model_file.close();
 
-	return URDFReadFromString (model_xml_string.c_str(), model, verbose, inertiaData, inertiaName, setInertia);
+	return URDFReadFromString (model_xml_string.c_str(), model, verbose, 
+            inertiaData, inertiaName, setInertia,
+            geometryData, geometryName, setGeometry);
 }
 
 RBDL_DLLAPI bool URDFReadFromString (const char* model_xml_string, Model* model, bool verbose,
-    Eigen::MatrixXd* inertiaData, std::map<std::string, size_t>* inertiaName, bool setInertia) {
+    Eigen::MatrixXd* inertiaData, std::map<std::string, size_t>* inertiaName, bool setInertia,
+    Eigen::MatrixXd* geometryData, std::map<std::string, size_t>* geometryName, bool setGeometry) {
 	assert (model);
 
 	boost::shared_ptr<urdf::ModelInterface> urdf_model = urdf::parseURDF (model_xml_string);
  
-	if (!construct_model (model, urdf_model, verbose, inertiaData, inertiaName, setInertia)) {
+	if (!construct_model (model, urdf_model, verbose, 
+                inertiaData, inertiaName, setInertia,
+                geometryData, geometryName, setGeometry)
+        ) {
 		cerr << "Error constructing model from urdf file." << endl;
 		return false;
 	}
