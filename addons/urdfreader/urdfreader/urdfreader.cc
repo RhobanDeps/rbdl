@@ -19,9 +19,9 @@ namespace Addons {
 
 using namespace Math;
 
-typedef boost::shared_ptr<urdf::Link> LinkPtr;
-typedef boost::shared_ptr<urdf::Joint> JointPtr;
-typedef boost::shared_ptr<urdf::ModelInterface> ModelPtr;
+typedef std::shared_ptr<urdf::Link> LinkPtr;
+typedef std::shared_ptr<urdf::Joint> JointPtr;
+typedef std::shared_ptr<urdf::ModelInterface> ModelPtr;
 
 typedef vector<LinkPtr> URDFLinkVector;
 typedef vector<JointPtr> URDFJointVector;
@@ -41,7 +41,7 @@ bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose,
             inertiaName->clear();
         }
 
-	boost::shared_ptr<urdf::Link> urdf_root_link;
+	std::shared_ptr<urdf::Link> urdf_root_link;
 
 	URDFLinkMap link_map;
 	link_map = urdf_model->links_;
@@ -58,7 +58,7 @@ bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose,
 	link_stack.push (link_map[(urdf_model->getRoot()->name)]);
 
 	// add the root body
-	const boost::shared_ptr<const urdf::Link>& root = urdf_model->getRoot ();
+	const std::shared_ptr<const urdf::Link>& root = urdf_model->getRoot ();
 	Vector3d root_inertial_rpy;
 	Vector3d root_inertial_position;
 	Matrix3d root_inertial_inertia;
@@ -419,7 +419,7 @@ RBDL_DLLAPI bool URDFReadFromString (const char* model_xml_string, Model* model,
     Eigen::MatrixXd* geometryData, std::map<std::string, size_t>* geometryName, bool setGeometry) {
 	assert (model);
 
-	boost::shared_ptr<urdf::ModelInterface> urdf_model = urdf::parseURDF (model_xml_string);
+	std::shared_ptr<urdf::ModelInterface> urdf_model = urdf::parseURDF (model_xml_string);
  
 	if (!construct_model (model, urdf_model, verbose, 
                 inertiaData, inertiaName, setInertia,

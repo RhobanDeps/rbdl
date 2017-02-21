@@ -22,6 +22,10 @@ catkin_package(
   CATKIN_DEPENDS rbdl urdfdom
 )
 
+if (NOT MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+endif()
+
 IF (NOT (${CMAKE_MAJOR_VERSION} LESS 3))
     cmake_policy(SET CMP0048 OLD)
 ENDIF (NOT (${CMAKE_MAJOR_VERSION} LESS 3))
