@@ -11,7 +11,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>Eigen</build_depend>
+  <build_depend>Eigen</build_depend> <!-- rhobandeps/eigen -->
 
   <run_depend>Eigen</run_depend>
 
