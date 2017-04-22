@@ -5,12 +5,13 @@ PROJECT (rbdl)
 find_package(catkin REQUIRED COMPONENTS
   Eigen
   )
+
 # Create the directory which will contain rbdl_config.h
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
+file(MAKE_DIRECTORY ${CATKIN_DEVEL_PREFIX}/include)
    
 # Catkin dependencies ad publications
 catkin_package(
-  INCLUDE_DIRS include ${CMAKE_CURRENT_BINARY_DIR}/include
+  INCLUDE_DIRS include ${CATKIN_DEVEL_PREFIX}/include
   LIBRARIES rbdl
   CATKIN_DEPENDS Eigen
 )
@@ -30,7 +31,7 @@ LIST( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake )
 
 INCLUDE_DIRECTORIES ( 
 	${CMAKE_CURRENT_SOURCE_DIR}/include
-	${CMAKE_CURRENT_BINARY_DIR}/include
+	${CATKIN_DEVEL_PREFIX}/include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -147,7 +148,7 @@ ENDIF (RBDL_STORE_VERSION)
 
 CONFIGURE_FILE (
 	"${CMAKE_CURRENT_SOURCE_DIR}/include/rbdl/rbdl_config.h.cmake" 
-	"${CMAKE_CURRENT_BINARY_DIR}/include/rbdl/rbdl_config.h"
+	"${CATKIN_DEVEL_PREFIX}/include/rbdl/rbdl_config.h"
 	)
 
 # Installation
