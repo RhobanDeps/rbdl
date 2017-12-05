@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT (rbdl)
 
 find_package(catkin REQUIRED COMPONENTS
-  Eigen
+  eigen
   )
 
 # Create the directory which will contain rbdl_config.h
@@ -13,7 +13,7 @@ file(MAKE_DIRECTORY ${CATKIN_DEVEL_PREFIX}/include)
 catkin_package(
   INCLUDE_DIRS include ${CATKIN_DEVEL_PREFIX}/include
   LIBRARIES rbdl
-  CATKIN_DEPENDS Eigen
+  CATKIN_DEPENDS eigen
 )
 
 SET ( RBDL_VERSION_MAJOR 2 )
