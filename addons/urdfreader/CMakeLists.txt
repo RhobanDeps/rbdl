@@ -23,7 +23,7 @@ catkin_package(
 )
 
 if (NOT MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 endif()
 
 IF (NOT (${CMAKE_MAJOR_VERSION} LESS 3))
