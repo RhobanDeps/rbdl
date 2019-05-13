@@ -32,7 +32,7 @@ bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose,
     Eigen::MatrixXd* inertiaData = NULL, std::map<std::string, size_t>* inertiaName = NULL,
     bool setInertia = false,
     Eigen::MatrixXd* geometryData = NULL, std::map<std::string, size_t>* geometryName = NULL,
-    bool setGeometry = false) {
+    bool setGeometry = false, std::vector<std::string> *nonFixedJointNames = NULL) {
         if (inertiaData != NULL && inertiaName == NULL) {
             throw std::logic_error("RBDL no inertia name");
         }
@@ -386,6 +386,10 @@ bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose,
 		} else {
 			rbdl_model->AddBody (rbdl_parent_id, rbdl_joint_frame, rbdl_joint, rbdl_body, urdf_child->name);
 		}
+
+    if (nonFixedJointNames != NULL && urdf_joint->type != urdf::Joint::FIXED) {
+      nonFixedJointNames->push_back(urdf_joint->name);
+    }
 	}
 
 	return true;
@@ -393,7 +397,8 @@ bool construct_model (Model* rbdl_model, ModelPtr urdf_model, bool verbose,
 
 RBDL_DLLAPI bool URDFReadFromFile (const char* filename, Model* model, bool verbose,
     Eigen::MatrixXd* inertiaData, std::map<std::string, size_t>* inertiaName, bool setInertia,
-    Eigen::MatrixXd* geometryData, std::map<std::string, size_t>* geometryName, bool setGeometry) {
+    Eigen::MatrixXd* geometryData, std::map<std::string, size_t>* geometryName, bool setGeometry,
+    std::vector<std::string> *nonFixedJointNames) {
 	ifstream model_file (filename);
 	if (!model_file) {
 		cerr << "Error opening file '" << filename << "'." << endl;
@@ -411,19 +416,20 @@ RBDL_DLLAPI bool URDFReadFromFile (const char* filename, Model* model, bool verb
 
 	return URDFReadFromString (model_xml_string.c_str(), model, verbose, 
             inertiaData, inertiaName, setInertia,
-            geometryData, geometryName, setGeometry);
+            geometryData, geometryName, setGeometry, nonFixedJointNames);
 }
 
 RBDL_DLLAPI bool URDFReadFromString (const char* model_xml_string, Model* model, bool verbose,
     Eigen::MatrixXd* inertiaData, std::map<std::string, size_t>* inertiaName, bool setInertia,
-    Eigen::MatrixXd* geometryData, std::map<std::string, size_t>* geometryName, bool setGeometry) {
+    Eigen::MatrixXd* geometryData, std::map<std::string, size_t>* geometryName, bool setGeometry,
+    std::vector<std::string> *nonFixedJointNames) {
 	assert (model);
 
 	std::shared_ptr<urdf::ModelInterface> urdf_model = urdf::parseURDF (model_xml_string);
  
 	if (!construct_model (model, urdf_model, verbose, 
                 inertiaData, inertiaName, setInertia,
-                geometryData, geometryName, setGeometry)
+                geometryData, geometryName, setGeometry, nonFixedJointNames)
         ) {
 		cerr << "Error constructing model from urdf file." << endl;
 		return false;

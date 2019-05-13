@@ -12,12 +12,12 @@ namespace Addons {
             Eigen::MatrixXd* inertiaData = NULL, std::map<std::string, size_t>* inertiaName = NULL, 
             bool setInertia = false,
             Eigen::MatrixXd* geometryData = NULL, std::map<std::string, size_t>* geometryName = NULL, 
-            bool setGeometry = false);
+            bool setGeometry = false, std::vector<std::string> *nonFixedJointNames = NULL);
 	RBDL_DLLAPI bool URDFReadFromString (const char* model_xml_string, Model* model, bool verbose = false,
             Eigen::MatrixXd* inertiaData = NULL, std::map<std::string, size_t>* inertiaName = NULL, 
             bool setInertia = false,
             Eigen::MatrixXd* geometryData = NULL, std::map<std::string, size_t>* geometryName = NULL, 
-            bool setGeometry = false);
+            bool setGeometry = false, std::vector<std::string> *nonFixedJointNames = NULL);
 }
 
 }
