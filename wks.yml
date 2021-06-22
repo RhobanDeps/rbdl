@@ -1,6 +1,6 @@
 deps:
-  - rhobandeps/urdfdom
-  - rhobandeps/eigen
+  - rhobandeps/urdfdom#wks
+  - rhobandeps/eigen#wks
 cmakes:
   - core/
   - addons/urdfreader
