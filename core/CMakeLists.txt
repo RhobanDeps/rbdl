@@ -1,20 +1,6 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.16.3)
 
 PROJECT (rbdl)
-
-find_package(catkin REQUIRED COMPONENTS
-  eigen
-  )
-
-# Create the directory which will contain rbdl_config.h
-file(MAKE_DIRECTORY ${CATKIN_DEVEL_PREFIX}/include)
-   
-# Catkin dependencies ad publications
-catkin_package(
-  INCLUDE_DIRS include ${CATKIN_DEVEL_PREFIX}/include
-  LIBRARIES rbdl
-  CATKIN_DEPENDS eigen
-)
 
 SET ( RBDL_VERSION_MAJOR 2 )
 SET ( RBDL_VERSION_MINOR 4 )
@@ -29,11 +15,6 @@ SET (PROJECT_VERSION ${RBDL_VERSION})
 
 LIST( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake )
 
-INCLUDE_DIRECTORIES ( 
-	${CMAKE_CURRENT_SOURCE_DIR}/include
-	${CATKIN_DEVEL_PREFIX}/include
-  ${catkin_INCLUDE_DIRS}
-)
 
 # SET (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
@@ -112,6 +93,7 @@ IF (RBDL_BUILD_STATIC)
 
 	IF (RBDL_BUILD_ADDON_LUAMODEL)
 		TARGET_LINK_LIBRARIES ( rbdl-static
+      Eigen3::Eigen
 			rbdl_luamodel-static
 			)
 	ENDIF (RBDL_BUILD_ADDON_LUAMODEL)
@@ -131,6 +113,11 @@ ELSE (RBDL_BUILD_STATIC)
 		LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 		ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 		)
+  TARGET_LINK_LIBRARIES( rbdl PUBLIC Eigen3::Eigen)
+  TARGET_INCLUDE_DIRECTORIES(rbdl PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    ${CMAKE_CURRENT_BINARY_DIR}/include
+  )
 ENDIF (RBDL_BUILD_STATIC)
 
 IF (RBDL_STORE_VERSION)
@@ -147,8 +134,8 @@ ELSE (RBDL_STORE_VERSION)
 ENDIF (RBDL_STORE_VERSION)
 
 CONFIGURE_FILE (
-	"${CMAKE_CURRENT_SOURCE_DIR}/include/rbdl/rbdl_config.h.cmake" 
-	"${CATKIN_DEVEL_PREFIX}/include/rbdl/rbdl_config.h"
+	${CMAKE_CURRENT_SOURCE_DIR}/include/rbdl/rbdl_config.h.cmake
+	${CMAKE_CURRENT_BINARY_DIR}/include/rbdl/rbdl_config.h
 	)
 
 # Installation

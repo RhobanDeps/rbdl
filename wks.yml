@@ -1,0 +1,6 @@
+deps:
+  - rhobandeps/urdfdom
+  - rhobandeps/eigen
+cmakes:
+  - core/
+  - addons/urdfreader

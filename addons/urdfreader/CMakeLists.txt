@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.16.3)
 project(rbdl_urdfreader)
 
 # IMPORTED FROM CORE CMakeLists.txt
@@ -13,14 +13,6 @@ SET ( RBDL_SO_VERSION
 )
 SET (PROJECT_VERSION ${RBDL_VERSION})
 # END of core import
-
-find_package(catkin REQUIRED COMPONENTS rbdl urdfdom)
-
-catkin_package(
-  INCLUDE_DIRS .
-  LIBRARIES rbdl_urdfreader
-  CATKIN_DEPENDS rbdl urdfdom
-)
 
 if (NOT MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
@@ -38,11 +30,6 @@ SET_TARGET_PROPERTIES ( ${PROJECT_EXECUTABLES} PROPERTIES
 	LINKER_LANGUAGE CXX
 )
 
-INCLUDE_DIRECTORIES (
-  ${catkin_INCLUDE_DIRS}
-	${URDF_INCLUDE_DIRS}
-)
-
 # Options
 SET ( URDFREADER_SOURCES
 	urdfreader/urdfreader.cc
@@ -56,15 +43,16 @@ SET_TARGET_PROPERTIES ( rbdl_urdfreader PROPERTIES
 	VERSION ${RBDL_VERSION}
 	SOVERSION ${RBDL_SO_VERSION}
   )
+TARGET_INCLUDE_DIRECTORIES(rbdl_urdfreader PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
+)
 
-TARGET_LINK_LIBRARIES (rbdl_urdfreader
-  ${catkin_LIBRARIES}
-	${URDF_LIBRARIES}
+TARGET_LINK_LIBRARIES (rbdl_urdfreader PUBLIC
+  rbdl urdfdom
 	)
 
 TARGET_LINK_LIBRARIES (rbdl_urdfreader_util
 	rbdl_urdfreader
-  ${catkin_LIBRARIES}
 	)
 
 #INSTALL (TARGETS rbdl_urdfreader rbdl_urdfreader_util
