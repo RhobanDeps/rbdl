@@ -1,3 +1,3 @@
 deps:
-  - rhobandeps/urdfdom#wks
-  - rhobandeps/eigen#wks
+  - rhobandeps/urdfdom
+  - rhobandeps/eigen
